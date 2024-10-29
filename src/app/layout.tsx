@@ -1,4 +1,10 @@
 import "./globals.css";
+import type { Metadata } from "next";
+
+// either Static metadata
+export const metadata: Metadata = {
+  title: "LEAF Writer Next.js Demo",
+};
 
 export default function RootLayout({
   children,
