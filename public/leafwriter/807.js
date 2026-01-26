@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkLeafwriter"] = self["webpackChunkLeafwriter"] || []).push([[807],{
 
-/***/ 83807:
+/***/ 3807:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -9,10 +9,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   conf: () => (/* binding */ conf),
 /* harmony export */   language: () => (/* binding */ language)
 /* harmony export */ });
-/* harmony import */ var _editor_editor_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(82792);
+/* harmony import */ var _editor_editor_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6506);
 /*!-----------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.48.0(0037b13fb5d186fdf1e7df51a9416a2de2b8c670)
+ * Version: 0.52.2(404545bded1df6ffa41ea0af4e8ddb219018c6c1)
  * Released under the MIT license
  * https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
  *-----------------------------------------------------------------------------*/

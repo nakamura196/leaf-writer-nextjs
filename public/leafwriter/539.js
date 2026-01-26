@@ -1,7 +1,7 @@
 "use strict";
 (self["webpackChunkLeafwriter"] = self["webpackChunkLeafwriter"] || []).push([[539],{
 
-/***/ 16539:
+/***/ 6539:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 // ESM COMPAT FLAG
@@ -13,18 +13,18 @@ __webpack_require__.d(__webpack_exports__, {
 });
 
 // EXTERNAL MODULE: ../../node_modules/react/jsx-runtime.js
-var jsx_runtime = __webpack_require__(73859);
-// EXTERNAL MODULE: ../../node_modules/@mui/material/styles/useTheme.js
-var useTheme = __webpack_require__(43792);
+var jsx_runtime = __webpack_require__(3859);
+// EXTERNAL MODULE: ../../node_modules/@mui/material/esm/styles/ThemeProviderWithVars.js + 5 modules
+var ThemeProviderWithVars = __webpack_require__(7299);
 // EXTERNAL MODULE: ../../node_modules/jotai/esm/react.mjs
-var react = __webpack_require__(42032);
-// EXTERNAL MODULE: include-loader!./node_modules/monaco-editor/esm/vs/editor/editor.api.js + 487 modules
-var editor_api = __webpack_require__(47537);
+var react = __webpack_require__(2032);
+// EXTERNAL MODULE: include-loader!../../node_modules/monaco-editor/esm/vs/editor/editor.api.js + 573 modules
+var editor_api = __webpack_require__(6506);
 // EXTERNAL MODULE: ../../node_modules/react/index.js
-var node_modules_react = __webpack_require__(59811);
+var node_modules_react = __webpack_require__(9811);
 // EXTERNAL MODULE: ./src/dialogs/editSource/store.ts
-var store = __webpack_require__(17847);
-;// CONCATENATED MODULE: ./src/dialogs/editSource/hooks/useEditor.ts
+var store = __webpack_require__(7847);
+;// ./src/dialogs/editSource/hooks/useEditor.ts
 
 
 
@@ -38,12 +38,11 @@ const useEditor = (editor) => {
   }, [xmlValidity.valid || xmlValidity.error.message]);
   const updateDecorations = () => {
     decorations?.clear();
-    if (xmlValidity.valid || !xmlValidity.error.positions)
-      return;
+    if (xmlValidity.valid || !xmlValidity.error.positions) return;
     const _decorations = editor?.createDecorationsCollection(
       xmlValidity.error.positions.map((pos) => {
         return {
-          range: new editor_api/* Range */.Q6(pos.line, 0, pos.line, pos.col),
+          range: new editor_api.Range(pos.line, 0, pos.line, pos.col),
           options: {
             className: "monaco-editor-error-line",
             isWholeLine: true,
@@ -62,7 +61,7 @@ const useEditor = (editor) => {
   };
 };
 
-;// CONCATENATED MODULE: ./src/dialogs/editSource/editor.tsx
+;// ./src/dialogs/editSource/editor.tsx
 
 
 
@@ -72,22 +71,23 @@ const useEditor = (editor) => {
 
 
 const Editor = ({ initialContent, type }) => {
-  const { palette } = (0,useTheme/* default */.A)();
   const setCurrentContent = (0,react/* useSetAtom */.Xr)(store/* currentContentAtom */.iT);
   const setOriginalContent = (0,react/* useSetAtom */.Xr)(store/* originalContentAtom */.OP);
   const setType = (0,react/* useSetAtom */.Xr)(store/* contentTypeAtom */.BR);
+  const { mode, systemMode } = (0,ThemeProviderWithVars/* useColorScheme */.Ut)();
   const [editor, setEditor] = (0,node_modules_react.useState)(null);
   const divEl = (0,node_modules_react.useRef)(null);
+  const isDarkMode = mode === "dark" || mode === "system" && systemMode === "dark";
   useEditor(editor);
   (0,node_modules_react.useEffect)(() => {
     setOriginalContent(initialContent);
     setType(type);
     if (divEl.current) {
       setCurrentContent(initialContent);
-      const monacoEditor = editor_api/* editor */.EN.create(divEl.current, {
+      const monacoEditor = editor_api.editor.create(divEl.current, {
         lineNumbers: "on",
         language: "xml",
-        theme: palette.mode === "dark" ? "vs-dark" : "vs-light",
+        theme: isDarkMode ? "vs-dark" : "vs-light",
         value: initialContent,
         wordWrap: "wordWrapColumn",
         wordWrapColumn: 100,
@@ -102,7 +102,7 @@ const Editor = ({ initialContent, type }) => {
     return () => {
       editor?.dispose();
     };
-  }, []);
+  }, [mode, systemMode]);
   return /* @__PURE__ */ (0,jsx_runtime.jsx)("div", { className: "Editor", ref: divEl, style: { minHeight: 600 } });
 };
 

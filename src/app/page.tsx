@@ -1,111 +1,107 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { Leafwriter } from "@cwrc/leafwriter";
-
-//* This only tells typescript that Leafwriter exists on the global scope (Window) */
-declare global {
-  interface Window {
-    Leafwriter: {
-      Leafwriter: typeof Leafwriter;
-    };
-  }
-}
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import AuthButton from "@/components/AuthButton";
+import GitHubStorageDialog, { type Resource } from "@/components/GitHubStorageDialog";
 
 export default function Home() {
-  const [editor, setEditor] = useState<Leafwriter>();
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.Leafwriter) {
-      const container = document.getElementById("leaf-writer-container");
-
-      if (!container) {
-        throw new Error("Container not found");
-      }
-
-      // LEAF-Writerのインスタンスを生成
-      const editor = new window.Leafwriter.Leafwriter(container);
-
-      // 簡単なTEI/XMLデータ
-      const teiXML = `<?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="https://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<?xml-model href="https://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml"
-	schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<TEI xmlns="http://www.tei-c.org/ns/1.0">
-  <teiHeader>
-      <fileDesc>
-         <titleStmt>
-            <title>Title</title>
-         </titleStmt>
-         <publicationStmt>
-            <p>Publication Information</p>
-         </publicationStmt>
-         <sourceDesc>
-            <p>Information about the source</p>
-         </sourceDesc>
-      </fileDesc>
-  </teiHeader>
-  <text>
-      <body>
-         <p>Some text here.</p>
-      </body>
-   </text>
-</TEI>
-`;
-
-      editor.init({
-        document: {
-          xml: teiXML, // XMLドキュメントの内容
-        },
-        settings: {
-          baseUrl: "/leafwriter", // 必要なリソースのパス
-        },
-      });
-
-      setEditor(editor);
-    }
-  }, []);
-
-  const download = async () => {
-    if (!editor) {
-      return;
-    }
-    const currentContent = await editor.getContent();
-    if (!currentContent) {
-      return;
-    }
-    const blob = new Blob([currentContent], { type: "text/xml" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "download.xml";
-    a.click();
+  const handleNewDocument = () => {
+    router.push("/edit");
   };
 
+  const handleOpenFromGitHub = () => {
+    setDialogOpen(true);
+  };
+
+  const handleLoad = (resource: Resource) => {
+    setDialogOpen(false);
+    // Navigate to editor with GitHub params
+    const params = new URLSearchParams();
+    params.set("owner", resource.owner);
+    params.set("repo", resource.repo);
+    params.set("branch", resource.branch);
+    if (resource.path) {
+      params.set("path", resource.path);
+    }
+    params.set("filename", resource.filename);
+    router.push(`/edit?${params.toString()}`);
+  };
+
+  const isAuthenticated = !!session?.accessToken;
+
   return (
-    <>
-      <header className="bg-white">
-        <nav
-          className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
-          aria-label="Global"
-        >
-          <div className="flex lg:flex-1">
-            <a className="-m-1.5 p-1.5">LEAF Writer Next.js Demo</a>
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <button
-              onClick={download}
-              className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              ダウンロード
-            </button>
-          </div>
-        </nav>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold">LEAF-Writer</h1>
+        <AuthButton />
       </header>
-      <div
-        id="leaf-writer-container"
-        style={{ height: "calc(100% - 72px)", width: "100%" }}
+
+      <main className="max-w-4xl mx-auto py-16 px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            LEAF-Writer
+          </h2>
+          <p className="text-lg text-gray-600">
+            A web-based XML editor for TEI documents
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 max-w-2xl mx-auto">
+          {/* New Document */}
+          <button
+            onClick={handleNewDocument}
+            className="p-8 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border-2 border-transparent hover:border-blue-500 text-left"
+          >
+            <div className="text-4xl mb-4">📝</div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              New Document
+            </h3>
+            <p className="text-gray-600">
+              Start with a blank TEI template
+            </p>
+          </button>
+
+          {/* Open from GitHub */}
+          <button
+            onClick={handleOpenFromGitHub}
+            disabled={!isAuthenticated}
+            className={`p-8 bg-white rounded-lg shadow-md transition-shadow border-2 border-transparent text-left ${
+              isAuthenticated
+                ? "hover:shadow-lg hover:border-green-500"
+                : "opacity-60 cursor-not-allowed"
+            }`}
+          >
+            <div className="text-4xl mb-4">🐙</div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Open from GitHub
+            </h3>
+            <p className="text-gray-600">
+              {isAuthenticated
+                ? "Load a document from your GitHub repository"
+                : "Sign in to access GitHub repositories"}
+            </p>
+          </button>
+        </div>
+
+        {!isAuthenticated && (
+          <p className="text-center text-gray-500 mt-8">
+            Sign in with GitHub to load and save documents to your repositories.
+          </p>
+        )}
+      </main>
+
+      <GitHubStorageDialog
+        open={dialogOpen}
+        type="load"
+        onLoad={handleLoad}
+        onCancel={() => setDialogOpen(false)}
       />
-    </>
+    </div>
   );
 }
