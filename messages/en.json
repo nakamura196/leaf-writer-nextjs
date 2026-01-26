@@ -1,0 +1,63 @@
+{
+  "home": {
+    "title": "LEAF-Writer",
+    "description": "A web-based XML editor for TEI documents",
+    "newDocument": "New Document",
+    "newDocumentDesc": "Start with a blank TEI template",
+    "openFromGitHub": "Open from GitHub",
+    "openFromGitHubDesc": "Load a document from your GitHub repository",
+    "signInRequired": "Sign in to access GitHub repositories",
+    "signInPrompt": "Sign in with GitHub to load and save documents to your repositories."
+  },
+  "auth": {
+    "signIn": "Sign in with GitHub",
+    "signOut": "Sign out",
+    "loading": "..."
+  },
+  "editor": {
+    "back": "Back",
+    "download": "Download XML",
+    "loadFromGitHub": "Load from GitHub",
+    "saveToGitHub": "Save to GitHub",
+    "loading": "Loading..."
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "github": {
+    "loadTitle": "Load from GitHub",
+    "saveTitle": "Save to GitHub",
+    "repositories": "Repositories",
+    "searchRepos": "Search repositories...",
+    "search": "Search",
+    "loading": "Loading...",
+    "loadMore": "Load more",
+    "noRepos": "No repositories found",
+    "private": "Private",
+    "public": "Public",
+    "protected": "Protected",
+    "filterFiles": "Filter files...",
+    "noMatchingFiles": "No matching files",
+    "emptyFolder": "This folder is empty",
+    "saveLocation": "Save location:",
+    "changeLocation": "Change location",
+    "filename": "Filename",
+    "commitMessage": "Commit message",
+    "updateDocument": "Update document",
+    "cancel": "Cancel",
+    "saveHere": "Save Here",
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "errors": {
+    "loadRepos": "Failed to load repositories",
+    "loadBranches": "Failed to load branches",
+    "loadFiles": "Failed to load files",
+    "loadFile": "Failed to load file",
+    "saveFile": "Failed to save file"
+  }
+}

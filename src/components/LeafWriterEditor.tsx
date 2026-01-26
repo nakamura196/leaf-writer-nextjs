@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import GitHubStorageDialog, { type Resource } from "./GitHubStorageDialog";
 import { getFileContent } from "@/lib/github";
 
@@ -62,6 +63,7 @@ export default function LeafWriterEditor({
   const [autoLoadAttempted, setAutoLoadAttempted] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const t = useTranslations("editor");
 
   // Update URL with current resource
   const updateUrl = useCallback((resource: Resource) => {
@@ -251,20 +253,20 @@ export default function LeafWriterEditor({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex gap-2 p-2 bg-gray-100 border-b">
+      <div className="flex gap-2 p-2 bg-gray-100 dark:bg-gray-800 border-b dark:border-gray-700">
         {isAuthenticated && (
           <>
             <button
               onClick={handleOpenLoad}
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             >
-              Load from GitHub
+              {t("loadFromGitHub")}
             </button>
             <button
               onClick={handleOpenSave}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
             >
-              Save to GitHub
+              {t("saveToGitHub")}
             </button>
           </>
         )}
@@ -272,10 +274,10 @@ export default function LeafWriterEditor({
           onClick={handleDownload}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Download XML
+          {t("download")}
         </button>
         {currentResource?.filename && (
-          <span className="px-4 py-2 text-gray-600">
+          <span className="px-4 py-2 text-gray-600 dark:text-gray-300">
             {currentResource.owner}/{currentResource.repo}/{currentResource.path ? `${currentResource.path}/` : ""}{currentResource.filename}
           </span>
         )}

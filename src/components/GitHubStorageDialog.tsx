@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import {
   listRepositories,
   listBranches,
@@ -10,7 +11,6 @@ import {
   type Repository,
   type Branch,
   type FileItem,
-  type PaginatedResult,
 } from "@/lib/github"
 
 export interface Resource {
@@ -42,6 +42,9 @@ export default function GitHubStorageDialog({
   onSave,
   onCancel,
 }: GitHubStorageDialogProps) {
+  const t = useTranslations("github")
+  const tErrors = useTranslations("errors")
+
   const [step, setStep] = useState<Step>("repo")
   const [repos, setRepos] = useState<Repository[]>([])
   const [branches, setBranches] = useState<Branch[]>([])
@@ -66,7 +69,7 @@ export default function GitHubStorageDialog({
   useEffect(() => {
     if (open) {
       setError(null)
-      setCommitMessage(type === "save" ? "Update document" : "")
+      setCommitMessage(type === "save" ? t("updateDocument") : "")
       setSearchQuery("")
       setSearchInput("")
       setCurrentPage(1)
@@ -96,7 +99,7 @@ export default function GitHubStorageDialog({
         loadRepos(1, "")
       }
     }
-  }, [open, type, resource])
+  }, [open, type, resource, t])
 
   const loadRepos = async (page: number = 1, search: string = "") => {
     setLoading(true)
@@ -111,7 +114,7 @@ export default function GitHubStorageDialog({
       setHasMore(result.hasMore)
       setCurrentPage(page)
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load repositories")
+      setError(tErrors("loadRepos"))
     } finally {
       setLoading(false)
     }
@@ -141,7 +144,7 @@ export default function GitHubStorageDialog({
       const data = await listBranches(owner, repo)
       setBranches(data)
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load branches")
+      setError(tErrors("loadBranches"))
     } finally {
       setLoading(false)
     }
@@ -159,12 +162,12 @@ export default function GitHubStorageDialog({
       })
       setFiles(data)
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load files")
+      setError(tErrors("loadFiles"))
       setFiles([])
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [tErrors])
 
   const handleSelectRepo = (repo: Repository) => {
     setSelectedRepo(repo)
@@ -228,7 +231,7 @@ export default function GitHubStorageDialog({
         sha,
       })
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load file")
+      setError(tErrors("loadFile"))
     } finally {
       setLoading(false)
     }
@@ -265,7 +268,7 @@ export default function GitHubStorageDialog({
         selectedRepo.name,
         filePath,
         content,
-        commitMessage || "Update document",
+        commitMessage || t("updateDocument"),
         existingSha,
         selectedBranch
       )
@@ -279,7 +282,7 @@ export default function GitHubStorageDialog({
         sha: result.sha,
       })
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save file")
+      setError(tErrors("saveFile"))
     } finally {
       setLoading(false)
     }
@@ -289,34 +292,34 @@ export default function GitHubStorageDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-semibold">
-            {type === "load" ? "Load from GitHub" : "Save to GitHub"}
+        <div className="px-6 py-4 border-b dark:border-gray-700 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            {type === "load" ? t("loadTitle") : t("saveTitle")}
           </h2>
           <button
             onClick={onCancel}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           >
             ✕
           </button>
         </div>
 
         {/* Breadcrumb */}
-        <div className="px-6 py-2 bg-gray-50 text-sm flex items-center gap-2 flex-wrap">
+        <div className="px-6 py-2 bg-gray-50 dark:bg-gray-900 text-sm flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setStep("repo")}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
           >
-            Repositories
+            {t("repositories")}
           </button>
           {selectedRepo && (
             <>
-              <span>/</span>
+              <span className="text-gray-500 dark:text-gray-400">/</span>
               <button
                 onClick={() => setStep("branch")}
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 {selectedRepo.name}
               </button>
@@ -324,12 +327,12 @@ export default function GitHubStorageDialog({
           )}
           {selectedBranch && (step === "files" || step === "filename") && (
             <>
-              <span>/</span>
-              <span className="text-gray-600">{selectedBranch}</span>
+              <span className="text-gray-500 dark:text-gray-400">/</span>
+              <span className="text-gray-600 dark:text-gray-300">{selectedBranch}</span>
               {currentPath && (
                 <>
-                  <span>/</span>
-                  <span className="text-gray-600">{currentPath}</span>
+                  <span className="text-gray-500 dark:text-gray-400">/</span>
+                  <span className="text-gray-600 dark:text-gray-300">{currentPath}</span>
                 </>
               )}
             </>
@@ -338,7 +341,7 @@ export default function GitHubStorageDialog({
 
         {/* Error */}
         {error && (
-          <div className="px-6 py-2 bg-red-50 text-red-600 text-sm">
+          <div className="px-6 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -354,20 +357,20 @@ export default function GitHubStorageDialog({
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Search repositories..."
-                  className="flex-1 border rounded px-3 py-2"
+                  placeholder={t("searchRepos")}
+                  className="flex-1 border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 />
                 <button
                   onClick={handleSearch}
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Search
+                  {t("search")}
                 </button>
               </div>
 
               {loading && repos.length === 0 ? (
                 <div className="flex items-center justify-center h-40">
-                  <div className="text-gray-500">Loading...</div>
+                  <div className="text-gray-500 dark:text-gray-400">{t("loading")}</div>
                 </div>
               ) : (
                 <>
@@ -376,13 +379,13 @@ export default function GitHubStorageDialog({
                       <button
                         key={repo.id}
                         onClick={() => handleSelectRepo(repo)}
-                        className="w-full text-left p-3 hover:bg-gray-100 rounded border flex items-center gap-3"
+                        className="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded border dark:border-gray-600 flex items-center gap-3"
                       >
                         <span className="text-2xl">📁</span>
                         <div>
-                          <div className="font-medium">{repo.full_name}</div>
-                          <div className="text-sm text-gray-500">
-                            {repo.private ? "🔒 Private" : "🌐 Public"}
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{repo.full_name}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {repo.private ? `🔒 ${t("private")}` : `🌐 ${t("public")}`}
                           </div>
                         </div>
                       </button>
@@ -395,16 +398,16 @@ export default function GitHubStorageDialog({
                       <button
                         onClick={handleLoadMore}
                         disabled={loading}
-                        className="px-4 py-2 text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                        className="px-4 py-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 disabled:opacity-50"
                       >
-                        {loading ? "Loading..." : "Load more"}
+                        {loading ? t("loading") : t("loadMore")}
                       </button>
                     </div>
                   )}
 
                   {repos.length === 0 && !loading && (
-                    <div className="text-gray-500 text-center py-8">
-                      No repositories found
+                    <div className="text-gray-500 dark:text-gray-400 text-center py-8">
+                      {t("noRepos")}
                     </div>
                   )}
                 </>
@@ -412,7 +415,7 @@ export default function GitHubStorageDialog({
             </div>
           ) : loading ? (
             <div className="flex items-center justify-center h-40">
-              <div className="text-gray-500">Loading...</div>
+              <div className="text-gray-500 dark:text-gray-400">{t("loading")}</div>
             </div>
           ) : step === "branch" ? (
             <div className="space-y-2">
@@ -420,13 +423,13 @@ export default function GitHubStorageDialog({
                 <button
                   key={branch.name}
                   onClick={() => handleSelectBranch(branch.name)}
-                  className="w-full text-left p-3 hover:bg-gray-100 rounded border flex items-center gap-3"
+                  className="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded border dark:border-gray-600 flex items-center gap-3"
                 >
                   <span className="text-2xl">🌿</span>
                   <div>
-                    <div className="font-medium">{branch.name}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{branch.name}</div>
                     {branch.protected && (
-                      <div className="text-sm text-gray-500">Protected</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{t("protected")}</div>
                     )}
                   </div>
                 </button>
@@ -439,25 +442,25 @@ export default function GitHubStorageDialog({
                 type="text"
                 value={fileFilter}
                 onChange={(e) => setFileFilter(e.target.value)}
-                placeholder="Filter files..."
-                className="w-full border rounded px-3 py-2"
+                placeholder={t("filterFiles")}
+                className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               />
 
               <div className="space-y-2">
                 {currentPath && (
                   <button
                     onClick={handleGoUp}
-                    className="w-full text-left p-3 hover:bg-gray-100 rounded border flex items-center gap-3"
+                    className="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded border dark:border-gray-600 flex items-center gap-3"
                   >
                     <span className="text-2xl">⬆️</span>
-                    <div className="font-medium">..</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">..</div>
                   </button>
                 )}
                 {filteredFiles.map((file) => (
                   <button
                     key={file.sha}
                     onClick={() => handleNavigate(file)}
-                    className={`w-full text-left p-3 hover:bg-gray-100 rounded border flex items-center gap-3 ${
+                    className={`w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded border dark:border-gray-600 flex items-center gap-3 ${
                       type === "load" && file.type === "file" && !file.name.endsWith(".xml")
                         ? "opacity-50"
                         : ""
@@ -467,17 +470,17 @@ export default function GitHubStorageDialog({
                     <span className="text-2xl">
                       {file.type === "dir" ? "📁" : "📄"}
                     </span>
-                    <div className="font-medium">{file.name}</div>
+                    <div className="font-medium text-gray-900 dark:text-gray-100">{file.name}</div>
                   </button>
                 ))}
                 {filteredFiles.length === 0 && files.length > 0 && (
-                  <div className="text-gray-500 text-center py-8">
-                    No matching files
+                  <div className="text-gray-500 dark:text-gray-400 text-center py-8">
+                    {t("noMatchingFiles")}
                   </div>
                 )}
                 {files.length === 0 && (
-                  <div className="text-gray-500 text-center py-8">
-                    This folder is empty
+                  <div className="text-gray-500 dark:text-gray-400 text-center py-8">
+                    {t("emptyFolder")}
                   </div>
                 )}
               </div>
@@ -485,9 +488,9 @@ export default function GitHubStorageDialog({
           ) : step === "filename" ? (
             <div className="space-y-4">
               {/* Show current location */}
-              <div className="p-3 bg-gray-50 rounded border">
-                <div className="text-sm text-gray-500 mb-1">Save location:</div>
-                <div className="font-medium">
+              <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded border dark:border-gray-600">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t("saveLocation")}</div>
+                <div className="font-medium text-gray-900 dark:text-gray-100">
                   {selectedRepo?.full_name}/{selectedBranch}/{currentPath ? `${currentPath}/` : ""}
                 </div>
                 <button
@@ -495,33 +498,33 @@ export default function GitHubStorageDialog({
                     setStep("repo")
                     loadRepos()
                   }}
-                  className="text-sm text-blue-600 hover:underline mt-2"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline mt-2"
                 >
-                  Change location
+                  {t("changeLocation")}
                 </button>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Filename
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {t("filename")}
                 </label>
                 <input
                   type="text"
                   value={filename}
                   onChange={(e) => setFilename(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="document.xml"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Commit message
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {t("commitMessage")}
                 </label>
                 <input
                   type="text"
                   value={commitMessage}
                   onChange={(e) => setCommitMessage(e.target.value)}
-                  className="w-full border rounded px-3 py-2"
-                  placeholder="Update document"
+                  className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  placeholder={t("updateDocument")}
                 />
               </div>
             </div>
@@ -529,19 +532,19 @@ export default function GitHubStorageDialog({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t flex justify-end gap-3">
+        <div className="px-6 py-4 border-t dark:border-gray-700 flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 border rounded hover:bg-gray-50"
+            className="px-4 py-2 border dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
-            Cancel
+            {t("cancel")}
           </button>
           {type === "save" && step === "files" && (
             <button
               onClick={handleSave}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
             >
-              Save Here
+              {t("saveHere")}
             </button>
           )}
           {type === "save" && step === "filename" && (
@@ -556,7 +559,7 @@ export default function GitHubStorageDialog({
               disabled={!filename || loading}
               className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Save"}
+              {loading ? t("saving") : t("save")}
             </button>
           )}
         </div>

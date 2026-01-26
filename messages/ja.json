@@ -1,0 +1,63 @@
+{
+  "home": {
+    "title": "LEAF-Writer",
+    "description": "TEI文書用のWebベースXMLエディタ",
+    "newDocument": "新規ドキュメント",
+    "newDocumentDesc": "空のTEIテンプレートから開始",
+    "openFromGitHub": "GitHubから開く",
+    "openFromGitHubDesc": "GitHubリポジトリからドキュメントを読み込む",
+    "signInRequired": "GitHubにサインインしてリポジトリにアクセス",
+    "signInPrompt": "GitHubにサインインして、リポジトリからドキュメントの読み込み・保存ができます。"
+  },
+  "auth": {
+    "signIn": "GitHubでサインイン",
+    "signOut": "サインアウト",
+    "loading": "..."
+  },
+  "editor": {
+    "back": "戻る",
+    "download": "XMLをダウンロード",
+    "loadFromGitHub": "GitHubから読み込み",
+    "saveToGitHub": "GitHubに保存",
+    "loading": "読み込み中..."
+  },
+  "settings": {
+    "language": "言語",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "github": {
+    "loadTitle": "GitHubから読み込み",
+    "saveTitle": "GitHubに保存",
+    "repositories": "リポジトリ",
+    "searchRepos": "リポジトリを検索...",
+    "search": "検索",
+    "loading": "読み込み中...",
+    "loadMore": "もっと読み込む",
+    "noRepos": "リポジトリが見つかりません",
+    "private": "プライベート",
+    "public": "パブリック",
+    "protected": "保護済み",
+    "filterFiles": "ファイルを絞り込み...",
+    "noMatchingFiles": "一致するファイルがありません",
+    "emptyFolder": "このフォルダは空です",
+    "saveLocation": "保存先:",
+    "changeLocation": "場所を変更",
+    "filename": "ファイル名",
+    "commitMessage": "コミットメッセージ",
+    "updateDocument": "ドキュメントを更新",
+    "cancel": "キャンセル",
+    "saveHere": "ここに保存",
+    "save": "保存",
+    "saving": "保存中..."
+  },
+  "errors": {
+    "loadRepos": "リポジトリの読み込みに失敗しました",
+    "loadBranches": "ブランチの読み込みに失敗しました",
+    "loadFiles": "ファイルの読み込みに失敗しました",
+    "loadFile": "ファイルの読み込みに失敗しました",
+    "saveFile": "ファイルの保存に失敗しました"
+  }
+}
