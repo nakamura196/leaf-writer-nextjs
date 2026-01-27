@@ -16,7 +16,7 @@ COPY . .
 
 # Copy leafwriter dist from node_modules to public folder
 RUN mkdir -p public/leafwriter && \
-    cp -R node_modules/@cwrc/leafwriter/dist/* public/leafwriter/
+    cp -R node_modules/@hi-ut/leafwriter-ja/dist/* public/leafwriter/
 
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build

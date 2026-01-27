@@ -1,6 +1,6 @@
 # LEAF-Writer Next.js
 
-TEIドキュメントのためのWebベースXMLエディタ [CWRC LEAF-Writer](https://github.com/cwrc/leaf-writer) を Next.js でラップしたアプリケーションです。
+TEIドキュメントのためのWebベースXMLエディタ [LEAF-Writer JA](https://github.com/hi-ut/leafwriter-ja) を Next.js でラップしたアプリケーションです。
 
 ## 機能
 
@@ -75,7 +75,7 @@ docker run -p 3000:3000 \
 
 - [Next.js](https://nextjs.org/) 15
 - [React](https://react.dev/) 18
-- [CWRC LEAF-Writer](https://github.com/cwrc/leaf-writer)
+- [LEAF-Writer JA](https://github.com/hi-ut/leafwriter-ja)
 - [NextAuth.js](https://authjs.dev/)
 - [next-intl](https://next-intl-docs.vercel.app/)
 - [next-themes](https://github.com/pacocoursey/next-themes)

@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "copy-leafwriter": "mkdir -p public/leafwriter && cp -R node_modules/@cwrc/leafwriter/dist/* public/leafwriter/",
+    "copy-leafwriter": "mkdir -p public/leafwriter && cp -R node_modules/@hi-ut/leafwriter-ja/dist/* public/leafwriter/",
     "dev": "npm run copy-leafwriter && next dev",
     "build": "npm run copy-leafwriter && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@cwrc/leafwriter": "^3.9.0",
+    "@hi-ut/leafwriter-ja": "^4.0.0",
     "@tailwindcss/postcss": "^4.1.18",
     "next": "^15.1.6",
     "next-auth": "5.0.0-beta.30",

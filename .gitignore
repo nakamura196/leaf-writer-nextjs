@@ -5,6 +5,9 @@ node_modules
 .next
 out
 
+# LEAF-Writer (auto-generated from node_modules)
+public/leafwriter
+
 # Production
 build
 
