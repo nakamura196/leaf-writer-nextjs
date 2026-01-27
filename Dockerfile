@@ -5,6 +5,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# GitHub Package Registry for @hi-ut scope
+RUN echo "@hi-ut:registry=https://npm.pkg.github.com" > .npmrc
+
 COPY package.json package-lock.json* ./
 RUN npm ci
 
