@@ -5,11 +5,13 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# GitHub Package Registry for @hi-ut scope
-RUN echo "@hi-ut:registry=https://npm.pkg.github.com" > .npmrc
+# GitHub Package Registry authentication
+ARG NPM_TOKEN
+RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > .npmrc && \
+    echo "@hi-ut:registry=https://npm.pkg.github.com" >> .npmrc
 
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm ci && rm -f .npmrc
 
 # Rebuild the source code only when needed
 FROM base AS builder
